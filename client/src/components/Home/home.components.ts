@@ -59,6 +59,7 @@ const SelectNameInput = styled.input`
     border-radius: 10px;
     padding:0.5rem;
     font-size:1.2rem;
+    text-align:center ;
     :focus{
         outline: none !important;
         box-shadow: 0 0 10px #455a64;
