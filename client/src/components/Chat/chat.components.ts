@@ -31,6 +31,7 @@ const ChatMessagesTop = styled.div`
     height: 90%;
     overflow-y: scroll;
     padding-right: 10px;
+    padding:1rem;
 `
 const ChatMessagesBottom = styled.form`
     margin-top: 5px;

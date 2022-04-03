@@ -2,6 +2,7 @@ import React from 'react'
 import {ChannelsWrapper,MessagesSubmit,Container,Users,UsersTitle,ChatMessages,Channels,ChatMessagesWrapper,ChatMessagesTop,ChatMessagesBottom,MessagesInput} from "./chat.components"
 import User from '../User'
 import Channel from '../Channel'
+import ChatMessage from '../ChatMessage'
 
 
 
@@ -16,6 +17,14 @@ const Chat = () => {
       <ChatMessages>
         <ChatMessagesWrapper>
           <ChatMessagesTop>
+            <ChatMessage isOwn={true} 
+            userName={"Grzegorz"} 
+            userImage={"wojak.jpg"}
+            messageText={"Hello"}/>
+            <ChatMessage isOwn={false} 
+            userName={"Paweł"} 
+            userImage={"boomer.png"}
+            messageText={"Hello"}/>
           </ChatMessagesTop>
           <ChatMessagesBottom>
             <MessagesInput/>

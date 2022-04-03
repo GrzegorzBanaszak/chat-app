@@ -1,8 +1,27 @@
-import React from 'react'
+import React, { FC } from 'react'
+import {MessageBox,MessageBottom,MessageUserName,MessageText,MessageImage} from "./chatMessage.components"
 
-const ChatMessage = () => {
+interface IChatMessageProps {
+  isOwn:boolean,
+  userName:string,
+  messageText:string,
+  userImage:string
+}
+
+
+const ChatMessage  :FC<IChatMessageProps>= ({isOwn,userName,messageText,userImage}) => {
   return (
-    <div>ChatMessage</div>
+    <MessageBox userMessage={isOwn}>
+      <MessageText userMessage={isOwn}>
+         {messageText}
+      </MessageText>
+      <MessageBottom userMessage={isOwn}>
+        <MessageUserName>
+            {userName}
+        </MessageUserName>
+      <MessageImage src={require("../../images/"+userImage)}/>
+      </MessageBottom>
+    </MessageBox>
   )
 }
 
