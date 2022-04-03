@@ -9,7 +9,7 @@ interface IChannelProps {
 
 const Channel : FC<IChannelProps> = ({channelName,channelUsers}) => {
   return (
-    <ChannelBox>
+    <ChannelBox whileHover={{scale:0.98}}>
       <ChannelUsers>
           <ChannelQuantity color={channelUsers > 0 ? "green" : "red"}>
             {channelUsers}

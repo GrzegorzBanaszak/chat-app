@@ -1,13 +1,15 @@
 import styled from "styled-components"
 import { motion } from "framer-motion"
 
-const ChannelBox = styled.div`
+const ChannelBox = styled(motion.div)`
     display: flex;
     margin:0.5rem ;
     padding: 0.5rem;
     align-items: center;
-    border: 2px solid #ccc ;
+    border: 1px solid #ccc ;
     cursor: pointer;
+    background-color:white ;
+    border-radius:5px ;
 `
 
 const ChannelName = styled.h3`

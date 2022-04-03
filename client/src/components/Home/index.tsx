@@ -37,10 +37,11 @@ const Home = () => {
     }
   }
   return (
-    <Container>
+    <>
       <Title 
       initial={{scale:0}}
-      animate={{scale:1}}>Chatex</Title>
+      animate={{scale:1}}>ChateX</Title>
+      <Container>
       <LogoImage src='Logo.png' alt="logo"/>
       <SelectSection onChange={characterChangeChandler}>
         <SelectLable>Select your character</SelectLable>
@@ -52,6 +53,7 @@ const Home = () => {
         <SubmitCharacter to="/chat">Submit character</SubmitCharacter>
       </SelectSection>
     </Container>
+    </>
   )
 }
 

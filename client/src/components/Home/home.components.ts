@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
 
 const Container = styled.section`
-    height:100vh;
+    height:calc(100vh - 90px);
     max-width:1200px;
     margin: 0 auto;
 `
@@ -11,6 +11,8 @@ const Title = styled(motion.h1)`
     text-align:center ;
     padding: 1rem 0;
     font-size:3rem ;
+    background-color:#1a237e ;
+    color: white;
 `
 
 const LogoImage = styled.img`

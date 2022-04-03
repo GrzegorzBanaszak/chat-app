@@ -1,17 +1,32 @@
 import styled from "styled-components"
 import { motion } from "framer-motion"
+import { device } from "../brakepoints"
 
 const Container = styled.div`
     width:100%;
-    height:calc(100vh - 58.17px);
+    height:calc(100vh - 56px);
     display: flex;
+    position: relative;
 `
 
-const Users = styled.section`
+interface isViseble{
+    show: boolean
+}
+
+const Users = styled.section<isViseble>`
     flex: 3;
     background-color:#3949ab ;
     padding: 1rem 0.2rem;
     font-size:2rem ;
+    position: absolute;
+    height: 100%;
+    transition: transform 0.4s ease-in;
+    transform:${props => props.show ?"translateX(0)" : "translateX(-100%)"} ;
+     @media ${device.tablet}{
+        transition:none;
+        transform:none;
+        position: relative;
+    }
 `
 
 const UsersTitle = styled.h2`
@@ -63,8 +78,18 @@ const MessagesSubmit = styled.button`
     border-radius: 15px;
 `
 
-const Channels = styled.section`
+const Channels = styled.section<isViseble>`
     flex: 3;
+    background-color:#1976d2 ;
+    position:absolute;
+    height: 100%;
+    transition: transform 0.4s ease-in;
+    transform:${props => props.show ?"translateX(0)" : "translateX(-100%)"} ;
+     @media ${device.tablet}{
+        transition:none;
+        transform:none;
+        position: relative;
+    }
 `
 
 const ChannelsWrapper = styled.div`
