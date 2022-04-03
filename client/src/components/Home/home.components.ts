@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
 
 const Container = styled.section`
-    height:100% ;
+    height:100vh;
     max-width:1200px;
     margin: 0 auto;
 `

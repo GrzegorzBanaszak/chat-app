@@ -2,8 +2,8 @@ import styled from "styled-components"
 import { motion } from "framer-motion"
 
 const Container = styled.div`
-    width: 100%;
-    height: 100%;
+    width:100%;
+    height:100vh;
     display: flex;
 `
 
@@ -65,4 +65,10 @@ const MessagesSubmit = styled.button`
 const Channels = styled.section`
     flex: 3;
 `
-export {MessagesSubmit,Container,Users,UsersTitle,ChatMessages,Channels,ChatMessagesWrapper,ChatMessagesTop,ChatMessagesBottom,MessagesInput}
+
+const ChannelsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height:100%;
+`
+export {ChannelsWrapper,MessagesSubmit,Container,Users,UsersTitle,ChatMessages,Channels,ChatMessagesWrapper,ChatMessagesTop,ChatMessagesBottom,MessagesInput}
