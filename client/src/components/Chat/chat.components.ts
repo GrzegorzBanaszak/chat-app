@@ -3,13 +3,13 @@ import { motion } from "framer-motion"
 
 const Container = styled.div`
     width:100%;
-    height:100vh;
+    height:calc(100vh - 58.17px);
     display: flex;
 `
 
 const Users = styled.section`
     flex: 3;
-    background-color:#546e7a ;
+    background-color:#3949ab ;
     padding: 1rem 0.2rem;
     font-size:2rem ;
 `
