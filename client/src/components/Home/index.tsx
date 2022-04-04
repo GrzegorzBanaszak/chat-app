@@ -1,4 +1,6 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
+import {storage} from "../firebaseConfig"
+import { getDownloadURL, ref } from 'firebase/storage';
 import defCharacter from "../../images/character.png"
 import ICharacter from '../../interfaces/ICharacter'
 import {Container,
@@ -11,6 +13,7 @@ import {Container,
   SelectImage,
   SelectNameInput,
   SubmitCharacter} from "./home.components"
+import { async } from '@firebase/util';
 
 
 const defCharctersList : ICharacter[] = [
@@ -28,7 +31,23 @@ const defCharctersList : ICharacter[] = [
 const Home = () => {
   const [imageCharacter,setImageCharacter] = useState<string>(defCharacter)
   const [nameCharacter,setNameCharacter] = useState<string>('')
-  const [characterList,setCharactersList] = useState<ICharacter[]>(defCharctersList)
+  const [characterList,setCharactersList] = useState<ICharacter[]>([])
+
+  useEffect(() =>{
+    const getCharacter = () =>{
+    defCharctersList.forEach(async (char) =>{
+        const imgRef = ref(storage,char.image)
+        const imgUrl = await getDownloadURL(imgRef)
+        const newCharacter: ICharacter ={
+          name:char.name,
+          image:imgUrl
+        }
+        setCharactersList(prev => [...prev,newCharacter])
+    })
+  }
+    getCharacter()
+    
+  },[])
 
   const characterChangeChandler = (e:React.ChangeEvent<HTMLSelectElement>)=>{
     const newImage = defCharctersList.find(x => x.name === e.target.value)

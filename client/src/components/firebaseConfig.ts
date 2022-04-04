@@ -1,5 +1,6 @@
 import {initializeApp} from "firebase/app"
 import {getFirestore,CollectionReference,collection,DocumentData} from "firebase/firestore"
+import { getStorage,ref } from "firebase/storage"
 import IUser from "../interfaces/IUser";
 
 
@@ -17,6 +18,11 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig)
 
 export const db = getFirestore(app)
+export const storage = getStorage(app);
+
+export const storageRef = ref(storage)
+
+
 
 const createCollection = <T = DocumentData> (collectionName : string) =>{
     return collection(db,collectionName) as CollectionReference<T>
