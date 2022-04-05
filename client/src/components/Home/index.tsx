@@ -47,16 +47,16 @@ const Home : FC<IHomeProps> = ({setUser}) => {
       setError(true)
       setErrorMessage("User exist select different name")
     }else{
-      const newUser = {name:nameCharacter,image:imageCharacter}
-      setUser(newUser)
-      localStorage.setItem("user",JSON.stringify(newUser))
       addUser({name:nameCharacter,image:imageCharacter})
-      nav('chat')
+      nav('/chat')
     }
   }
 
   const addUser = async (user:IUser) =>{
-    await addDoc(usersCol,user)
+    const newUser =  await addDoc(usersCol,user)
+    setUser({...user,id:newUser.id})
+    localStorage.setItem("user",JSON.stringify({...user,id:newUser.id}))
+    
   }
 
   useEffect(() =>{
