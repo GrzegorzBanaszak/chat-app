@@ -9,7 +9,7 @@ interface IUserProps {
 const User :FC<IUserProps> = ({userName,userImage}) => {
   return (
     <UserBox>
-        <UserImage src={require(`../../images/${userImage}`)}/>
+        <UserImage src={userImage}/>
         <UserName>{userName}</UserName>
     </UserBox>
   )
