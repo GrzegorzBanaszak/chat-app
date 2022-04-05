@@ -1,5 +1,4 @@
-export default interface ICharacter {
-    id: string,
+export default interface IUser {
     name: string,
     image: string
 }

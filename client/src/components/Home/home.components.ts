@@ -49,7 +49,8 @@ const SelectOption = styled(motion.option)`
 `
 
 const SelectImage = styled(motion.img)`
-    margin:1.2rem 0;
+    margin-top:1rem;
+    margin-bottom:0.5rem;
     width: 200px;
     height:200px;
     border-radius: 50%;
@@ -68,13 +69,19 @@ const SelectNameInput = styled.input`
     }
 `
 
-const SubmitCharacter = styled(Link)`
+const SelectError = styled.span`
+    color:crimson ;
+    margin-top:0.5rem;
+`
+
+const SubmitCharacter = styled.a`
     margin-top: 1.2rem;
     text-decoration:none;
     background-color: #37474f;
     color: #eceff1;
     padding: 0.7rem 1rem;
     border-radius: 15px;
+    cursor: pointer;
 `
 
-export  {Container,Title,LogoImage,SelectSection,SelectLable,SelectCharacter,SelectOption,SelectImage,SelectNameInput,SubmitCharacter}
+export  {SelectError,Container,Title,LogoImage,SelectSection,SelectLable,SelectCharacter,SelectOption,SelectImage,SelectNameInput,SubmitCharacter}

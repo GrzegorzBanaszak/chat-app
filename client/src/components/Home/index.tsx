@@ -1,6 +1,5 @@
-import React,{useState,useEffect} from 'react'
-import {storage} from "../firebaseConfig"
-import { getDownloadURL, ref } from 'firebase/storage';
+import React,{useState,useEffect, FC} from 'react'
+import {charactersCol,usersCol} from "../firebaseConfig"
 import defCharacter from "../../images/character.png"
 import ICharacter from '../../interfaces/ICharacter'
 import {Container,
@@ -12,49 +11,80 @@ import {Container,
   SelectOption,
   SelectImage,
   SelectNameInput,
-  SubmitCharacter} from "./home.components"
-import { async } from '@firebase/util';
+  SubmitCharacter,
+SelectError} from "./home.components"
+import { addDoc, getDocs } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom'
+import IUser from '../../interfaces/IUser'
+
+interface IHomeProps{
+  setUser:React.Dispatch<React.SetStateAction<IUser | null>>
+}
 
 
-const defCharctersList : ICharacter[] = [
-  {
-    name:"boomer",
-    image:"boomer.png"
-  },
-  {
-    name:"wojak",
-    image:"wojak.jpg"
-  }
-] 
-
-
-const Home = () => {
+const Home : FC<IHomeProps> = ({setUser}) => {
+  //States
+  const nav = useNavigate();
   const [imageCharacter,setImageCharacter] = useState<string>(defCharacter)
   const [nameCharacter,setNameCharacter] = useState<string>('')
+  const [error,setError] = useState<boolean>(false);
+  const [errorMessage,setErrorMessage] = useState<string>("");
   const [characterList,setCharactersList] = useState<ICharacter[]>([])
 
-  useEffect(() =>{
-    const getCharacter = () =>{
-    defCharctersList.forEach(async (char) =>{
-        const imgRef = ref(storage,char.image)
-        const imgUrl = await getDownloadURL(imgRef)
-        const newCharacter: ICharacter ={
-          name:char.name,
-          image:imgUrl
-        }
-        setCharactersList(prev => [...prev,newCharacter])
-    })
-  }
-    getCharacter()
-    
-  },[])
 
-  const characterChangeChandler = (e:React.ChangeEvent<HTMLSelectElement>)=>{
-    const newImage = defCharctersList.find(x => x.name === e.target.value)
-    if (newImage !== undefined){
-      setImageCharacter(require(`../../images/${newImage.image}`))
+  const getCharacters = async () =>{
+      const charactersDocs = await getDocs(charactersCol) 
+      const charactersData = charactersDocs.docs.map(charDoc =>{
+        return charDoc.data();
+      })
+      setCharactersList(charactersData)
+  }
+
+  const userExist = async () =>{
+    const usersDocs = await getDocs(usersCol)
+    const ifExistAny = usersDocs.docs.find(userDoc => userDoc.data().name.toLowerCase() === nameCharacter.toLowerCase()) 
+    if(ifExistAny !== undefined){
+      setError(true)
+      setErrorMessage("User exist select different name")
+    }else{
+      setUser({name:nameCharacter,image:imageCharacter})
+      addUser({name:nameCharacter,image:imageCharacter})
+      nav('chat')
     }
   }
+
+  const addUser = async (user:IUser) =>{
+    await addDoc(usersCol,user)
+  }
+
+  useEffect(() =>{
+
+    getCharacters()
+  },[])
+
+  //Handler inputs
+
+  const characterChangeChandler = (e:React.ChangeEvent<HTMLSelectElement>)=>{
+    const newImage = characterList.find(x => x.name === e.target.value)
+    if (newImage !== undefined){
+      setImageCharacter(newImage.image)
+    }
+  }
+
+
+  const onSubmitChandler = (e:React.MouseEvent<HTMLAnchorElement>) =>{
+    e.preventDefault();
+    if(nameCharacter === ""){
+      setError(true)
+      setErrorMessage("Type character name")
+    }else if(imageCharacter === defCharacter){
+      setError(true)
+      setErrorMessage("Select character")
+    }else{
+      userExist()
+    }
+  }
+ 
   return (
     <>
       <Title 
@@ -69,7 +99,8 @@ const Home = () => {
         </SelectCharacter>
         <SelectImage src={imageCharacter} alt="characterImage" />
         <SelectNameInput type="text" placeholder='Type your nickname' onChange={e => setNameCharacter(e.target.value)}/>
-        <SubmitCharacter to="/chat">Submit character</SubmitCharacter>
+        {error&& <SelectError>{errorMessage}</SelectError>}
+        <SubmitCharacter onClick={onSubmitChandler}>Submit character</SubmitCharacter>
       </SelectSection>
     </Container>
     </>
