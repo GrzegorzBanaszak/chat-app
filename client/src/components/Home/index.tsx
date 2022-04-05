@@ -47,7 +47,9 @@ const Home : FC<IHomeProps> = ({setUser}) => {
       setError(true)
       setErrorMessage("User exist select different name")
     }else{
-      setUser({name:nameCharacter,image:imageCharacter})
+      const newUser = {name:nameCharacter,image:imageCharacter}
+      setUser(newUser)
+      localStorage.setItem("user",JSON.stringify(newUser))
       addUser({name:nameCharacter,image:imageCharacter})
       nav('chat')
     }

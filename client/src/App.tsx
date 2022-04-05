@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {BrowserRouter,Routes,Route, Navigate} from 'react-router-dom';
 import Home from './components/Home';
 import Chat from './components/Chat';
@@ -9,6 +9,13 @@ import IUser from './interfaces/IUser';
 
 function App() {
   const [user,setUser] = useState<IUser| null>(null)
+
+  useEffect(() =>{
+    const userStorage = localStorage.getItem("user")
+    if(userStorage !== null){
+      setUser(JSON.parse(userStorage))
+    }
+  },[])
 
   return (
     <BrowserRouter>
