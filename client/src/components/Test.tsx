@@ -6,8 +6,8 @@ const Test = () => {
     const [image,setImage] = useState("");
 
     useEffect(() =>{
-        const imageRef = ref(storage,"happy.jpg")
-        getDownloadURL(imageRef).then(url =>(setImage(url)))
+        const imageRef = ref(storage,"char1.jpg")
+        getDownloadURL(imageRef).then(url =>console.log(url))
     },[])
   return (
     <div>

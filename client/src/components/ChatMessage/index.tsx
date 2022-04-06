@@ -19,7 +19,7 @@ const ChatMessage  :FC<IChatMessageProps>= ({isOwn,userName,messageText,userImag
         <MessageUserName>
             {userName}
         </MessageUserName>
-      <MessageImage src={require("../../images/"+userImage)}/>
+      <MessageImage src={userImage}/>
       </MessageBottom>
     </MessageBox>
   )

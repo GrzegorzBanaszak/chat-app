@@ -15,7 +15,15 @@ const io = new Server(server,{
     },
 })
 
+io.on("connection",(socket) =>{
+    console.log(socket.id)
 
+    
+    socket.on("message",(data) =>{
+        console.log(data)
+        socket.broadcast.emit("message",{user:data.user,message:data.message})
+    })
+})
 
 
 server.listen(3001,() =>{
