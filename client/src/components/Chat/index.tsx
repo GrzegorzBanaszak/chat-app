@@ -61,9 +61,9 @@ const Chat = () => {
         </ChatMessages>
         <Channels show={toggleChannels}>
           <ChannelsWrapper>
-            <Channel channelName={"Channel 1"} channelUsers={4}/>
+            <Channel channelName={"Channel 1"} channelUsers={0}/>
             <Channel channelName={"Channel 2"} channelUsers={0}/>
-            <Channel channelName={"Channel 3"} channelUsers={5}/>
+            <Channel channelName={"Channel 3"} channelUsers={0}/>
           </ChannelsWrapper>
         </Channels>
       </Container>
