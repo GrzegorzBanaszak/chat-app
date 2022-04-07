@@ -15,14 +15,40 @@ const io = new Server(server,{
     },
 })
 
-io.on("connection",(socket) =>{
-    console.log(socket.id)
+let channels = [{
+    name:"Channel 1",
+    users:[]
+},
+{
+    name:"Channel 2",
+    users:[]
+}
+]
 
-    
+io.on("connection",(socket) =>{
+    socket.join("Channel 1")
+    io.emit("get_user")
     socket.on("message",(data) =>{
-        console.log(data)
         socket.broadcast.emit("message",{user:data.user,message:data.message})
     })
+
+    socket.on("update_channel",(data) =>{
+        if(!channels.find(chan => chan.name === "Channel 1").users.some(user => user.name === data.name)){
+         channels.find(chan => chan.name === "Channel 1").users.push({...data,socketId:socket.id})
+         socket.broadcast.emit("user_join",{...data,socketId:socket.id})
+        }
+        socket.emit("get_users",channels.find(chan => chan.name === "Channel 1").users)
+    })
+    
+    socket.on("disconnect",() =>{
+        const newChannels =  channels.find(chan => chan.name === "Channel 1").users.filter(user => user.socketId !== socket.id)
+        console.log(newChannels)
+        if(newChannels !== undefined){
+            channels.find(chan => chan.name === "Channel 1").users = newChannels
+            socket.broadcast.emit("user_leave",newChannels)
+        }
+    })
+
 })
 
 

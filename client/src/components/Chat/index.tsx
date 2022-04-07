@@ -22,11 +22,12 @@ const Chat :FC<IChatProps> = ({user}) => {
   const [toggleChannels,setToggleChannels] = useState<boolean>(false)
   const [messages,setMessages] = useState<IMessage[]>([])
   const [users,setUsers] = useState<IUser[]>([])
+  const [channel,setChannel] = useState<string>("Channel 1")
   const [messageText,setMessageText] = useState<string>('')
 
   const getUsers = async () =>{
-    const usersDocs = await getDocs(usersCol)
-    setUsers(usersDocs.docs.map(user => ({...user.data(),id:user.id})))
+    // const usersDocs = await getDocs(usersCol)
+    // setUsers(usersDocs.docs.map(user => ({...user.data(),id:user.id})))
   }
   useEffect(() =>{
     getUsers()
@@ -34,6 +35,7 @@ const Chat :FC<IChatProps> = ({user}) => {
 
 
   useEffect(() =>{
+
     socket.on("message",(data) => {
       console.log(data)
         const message : IMessage = {
@@ -43,6 +45,24 @@ const Chat :FC<IChatProps> = ({user}) => {
         }
         setMessages(prev => [...prev,message])
     })
+
+    socket.on("get_user",() =>{
+      socket.emit("update_channel",user)
+    })
+    socket.on("user_join",(data) =>{
+      setUsers(prev => [...prev,data])
+    })
+    socket.on("get_users",(data) =>{
+      setUsers(data)
+    })
+
+    socket.on("user_leave",(data) =>{
+      setUsers(data)
+    })
+
+    return () =>{
+      socket.emit("remove_user",user)
+    }
   },[socket])
 
   const addMessageSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
