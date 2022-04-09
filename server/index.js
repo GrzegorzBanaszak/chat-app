@@ -15,39 +15,47 @@ const io = new Server(server,{
     },
 })
 
-let channels = [{
-    name:"Channel 1",
-    users:[]
-},
-{
-    name:"Channel 2",
-    users:[]
-}
-]
+/*
+    user data
+    socketId
+    channel
+
+    channel_1
+*/
+
+let usersData = new Array(0);
 
 io.on("connection",(socket) =>{
-    socket.join("Channel 1")
-    //Get connected user
-    io.emit("get_user")
-
-    socket.on("message",(data) =>{
-        socket.broadcast.emit("message",{user:data.user,message:data.message})
+    socket.on("send_message",(data) =>{
+        socket.to(usersData).emit("receive_message",{user:data.user,message:data.message})
     })
 
     socket.on("update_channel",(data) =>{
-        if(!channels.find(chan => chan.name === "Channel 1").users.some(user => user.name === data.name)){
-         channels.find(chan => chan.name === "Channel 1").users.push({...data,socketId:socket.id})
-         socket.broadcast.emit("user_join",channels.find(chan => chan.name === "Channel 1").users)
+        if(usersData.length === 0 || usersData.some(user => user.name !== data.user.name)){
+            usersData.push({...data.user,channel:data.channel,socketId:socket.id})
+            socket.broadcast.emit("on_join",usersData)
         }
-        socket.emit("get_users",channels)
+
+        if(usersData.some(user => user.channel !== data.channel) && usersData.some(user => user.name === data.user.name)){
+            const filterdUsers = usersData.filter(user => user.name !== data.user.name)
+            usersData = [...filterdUsers,{...data.user,channel:data.channel,socketId:socket.id}]
+            socket.broadcast.emit("on_join",usersData)
+        }
+        console.log(io.sockets.adapter.rooms.has(data.channel))
+        socket.join(data.channel)
+        socket.emit("user_join",usersData)
     })
+
+    // socket.on("channel_change",(data) =>{
+
+    // })
     
     socket.on("disconnect",() =>{
-        const newChannels =  channels.find(chan => chan.name === "Channel 1").users.filter(user => user.socketId !== socket.id)
-        if(newChannels !== undefined){
-            channels.find(chan => chan.name === "Channel 1").users = newChannels
-            socket.broadcast.emit("user_leave",channels)
-        }
+       const filtredUsers = usersData.filter(user => user.socketId !== socket.id)
+       if(filtredUsers !== undefined){
+           usersData = filtredUsers
+           socket.broadcast.emit("user_leave",usersData)
+       }
     })
 
 })

@@ -22,9 +22,8 @@ const Chat :FC<IChatProps> = ({user}) => {
   const [toggleUsers,setToggleUsers] = useState<boolean>(false)
   const [toggleChannels,setToggleChannels] = useState<boolean>(false)
   const [messages,setMessages] = useState<IMessage[]>([])
-  const [channelsData,setChannelsData] = useState<IChannelsData[]>([])
   const [users,setUsers] = useState<IUser[]>([])
-  const [channel,setChannel] = useState<string>("Channel 1")
+  const [channel,setChannel] = useState<string>("channel1")
   const [messageText,setMessageText] = useState<string>('')
 
   const getUsers = async () =>{
@@ -38,8 +37,7 @@ const Chat :FC<IChatProps> = ({user}) => {
 
   useEffect(() =>{
 
-    socket.on("message",(data) => {
-      console.log(data)
+    socket.on("receive_message",(data) => {
         const message : IMessage = {
         value:data.message,
         user:data.user,
@@ -48,35 +46,27 @@ const Chat :FC<IChatProps> = ({user}) => {
         setMessages(prev => [...prev,message])
     })
 
-    socket.on("get_user",() =>{
-      //send user when 
-      socket.emit("update_channel",user)
+    //Emit user when join
+    socket.emit("update_channel",{user,channel})
+    //Get user when you join
+    socket.on("on_join",(data) =>{
+      console.log(data)
+      setUsers(data)
     })
+
+    //Get users when user join
     socket.on("user_join",(data) =>{
       setUsers(data)
     })
-    socket.on("get_users",(data:IChannelsData[]) =>{
-      if(data !== undefined){
-        const userData = data.find(x => x.name === channel)?.users
-        if(userData !== undefined){
-          setUsers(userData)
-        }
-      }
-      setChannelsData(data)
+
+    socket.on("user_leave",(data) =>{
+      setUsers(data)
     })
 
-    socket.on("user_leave",(data:IChannelsData[]) =>{
-      if(data !== undefined){
-        const userData = data.find(x => x.name === channel)?.users
-        if(userData !== undefined){
-          setUsers(userData)
-        }
-      }
-      setChannelsData(data)
-    })
-
-    
-  },[socket])
+    return () =>{
+      socket.off()
+    }
+  },[socket,channel])
 
   const addMessageSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
@@ -86,7 +76,7 @@ const Chat :FC<IChatProps> = ({user}) => {
       timestamp:Date.now().toString(),
       }
     setMessages(prev => [...prev,message])
-    socket.emit("message",{message:messageText,user:user})
+    socket.emit("send_message",{message:messageText,user,channel})
     setMessageText("")
   }
 
@@ -105,7 +95,7 @@ const Chat :FC<IChatProps> = ({user}) => {
       <Container>
         <Users show={toggleUsers}>
           <UsersTitle>Users</UsersTitle>
-          {users.length > 0  && users.map(user => (<User key={user.id} userName={user.name} userImage={user.image}/>))}
+          {users.length > 0  && users.filter(user => user.channel === channel)?.map(user => (<User key={user.id} userName={user.name} userImage={user.image}/>))}
         </Users>
         <ChatMessages>
           <ChatMessagesWrapper>
@@ -125,9 +115,8 @@ const Chat :FC<IChatProps> = ({user}) => {
         </ChatMessages>
         <Channels show={toggleChannels}>
           <ChannelsWrapper>
-            {channelsData.map(channel =>(
-              <Channel channelName={channel.name} channelUsers={channel.users.length}/>
-            ))}
+            <Channel changeChannel={setChannel} channelName={"channel1"} channelUsers={users.filter(user => user.channel ==="channel1").length}/>
+            <Channel changeChannel={setChannel} channelName={"channel2"} channelUsers={users.filter(user => user.channel ==="channel2").length}/>
           </ChannelsWrapper>
         </Channels>
       </Container>
