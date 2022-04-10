@@ -8,12 +8,9 @@ app.use(cors())
 
 const server = http.createServer(app)
 
-const io = new Server(server,{
-    cors:{
-        origin:["http://localhost:3000","http://192.168.0.104:3000"],
-        methods:["GET","POST","DELETE"]
-    },
-})
+const io = new Server(server)
+
+const PORT = 3001
 
 /*
     user data
@@ -26,8 +23,11 @@ const io = new Server(server,{
 let usersData = new Array(0);
 
 io.on("connection",(socket) =>{
+
+    socket.join("channel1")
+
     socket.on("send_message",(data) =>{
-        socket.to(usersData).emit("receive_message",{user:data.user,message:data.message})
+        socket.to(data.message.channel).emit("receive_message",{message:data.message})
     })
 
     socket.on("update_channel",(data) =>{
@@ -61,6 +61,6 @@ io.on("connection",(socket) =>{
 })
 
 
-server.listen(3001,() =>{
+server.listen(process.env.PORT || PORT,() =>{
     console.log('Server listening 3001')
 })

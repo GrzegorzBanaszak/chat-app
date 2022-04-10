@@ -48,6 +48,32 @@ const SelectOption = styled(motion.option)`
     text-align:center;
 `
 
+const SelectImageWrapper = styled(motion.div)`
+    position:relative ;
+    padding: 0.7rem 0;
+    margin: 0.5rem 0;
+`
+
+const SelectArrowLeft = styled(motion.div)`
+    position:absolute;
+    top:0;
+    left:-50px;
+    height:100%;
+    display:flex;
+    align-items:center;
+    font-size:3rem;
+    background-color:#fafafa ;
+`
+const SelectArrowRight = styled(motion.div)`
+    position:absolute;
+    top:0;
+    right:-50px;
+    height:100%;
+    display:flex;
+    align-items:center;
+    font-size:3rem;
+    background-color:#fafafa ;
+`
 const SelectImage = styled(motion.img)`
     margin-top:1rem;
     margin-bottom:0.5rem;
@@ -84,4 +110,4 @@ const SubmitCharacter = styled.a`
     cursor: pointer;
 `
 
-export  {SelectError,Container,Title,LogoImage,SelectSection,SelectLable,SelectCharacter,SelectOption,SelectImage,SelectNameInput,SubmitCharacter}
+export  {SelectArrowLeft,SelectArrowRight,SelectImageWrapper,SelectError,Container,Title,LogoImage,SelectSection,SelectLable,SelectCharacter,SelectOption,SelectImage,SelectNameInput,SubmitCharacter}

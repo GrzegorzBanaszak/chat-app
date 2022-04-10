@@ -1,15 +1,14 @@
-import React,{FC, useEffect, useState} from 'react'
+import React,{FC, useEffect, useRef, useState} from 'react'
 import {ChannelsWrapper,MessagesSubmit,Container,Users,UsersTitle,ChatMessages,Channels,ChatMessagesWrapper,ChatMessagesTop,ChatMessagesBottom,MessagesInput} from "./chat.components"
 import User from '../User'
 import Channel from '../Channel'
 import ChatMessage from '../ChatMessage'
 import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
-import {usersCol} from "../firebaseConfig"
-import { getDocs } from 'firebase/firestore'
+import {messagesCol} from "../firebaseConfig"
+import { addDoc, getDocs,serverTimestamp } from 'firebase/firestore'
 import  {io, Socket } from "socket.io-client"
 import IMessage from '../../interfaces/IMessage'
-import IChannelsData from '../../interfaces/IChannelsData'
 
 const socket : Socket = io("http://192.168.0.104:3001");
 
@@ -25,32 +24,32 @@ const Chat :FC<IChatProps> = ({user}) => {
   const [users,setUsers] = useState<IUser[]>([])
   const [channel,setChannel] = useState<string>("channel1")
   const [messageText,setMessageText] = useState<string>('')
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
-  const getUsers = async () =>{
-    // const usersDocs = await getDocs(usersCol)
-    // setChannelsData(usersDocs.docs.map(user => ({...user.data(),id:user.id})))
+
+  const getMessages = async () =>{
+    const messagesDocs = await getDocs(messagesCol)
+    setMessages(messagesDocs.docs.map(message => ({...message.data(),id:message.id})))
   }
   useEffect(() =>{
-    getUsers()
+    getMessages()
   },[])
+
+  useEffect(() =>{
+    scrollRef.current?.scrollIntoView({behavior: "smooth"})
+  },[messages])
 
 
   useEffect(() =>{
 
     socket.on("receive_message",(data) => {
-        const message : IMessage = {
-        value:data.message,
-        user:data.user,
-        timestamp:Date.now().toString(),
-        }
-        setMessages(prev => [...prev,message])
+        setMessages(prev => [...prev,data.message])
     })
 
     //Emit user when join
     socket.emit("update_channel",{user,channel})
     //Get user when you join
     socket.on("on_join",(data) =>{
-      console.log(data)
       setUsers(data)
     })
 
@@ -68,15 +67,18 @@ const Chat :FC<IChatProps> = ({user}) => {
     }
   },[socket,channel])
 
-  const addMessageSubmit = (e:React.FormEvent<HTMLFormElement>)=>{
+  const addMessageSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
     const message : IMessage = {
       value:messageText,
       user:user,
-      timestamp:Date.now().toString(),
-      }
-    setMessages(prev => [...prev,message])
-    socket.emit("send_message",{message:messageText,user,channel})
+      createdAt:serverTimestamp(),
+      channel:channel,
+    }
+    const addedMessage = await addDoc(messagesCol,message)
+
+    setMessages(prev => [...prev,{...message,id:addedMessage.id,channel:channel}])
+    socket.emit("send_message",{message:{...message,id:addedMessage.id,channel:channel}})
     setMessageText("")
   }
 
@@ -99,9 +101,9 @@ const Chat :FC<IChatProps> = ({user}) => {
         </Users>
         <ChatMessages>
           <ChatMessagesWrapper>
-            <ChatMessagesTop>
-              {messages.length > 0 && messages.map(message =>(
-                <ChatMessage isOwn={message.user.id === user.id? true : false} 
+            <ChatMessagesTop ref={scrollRef}>
+              {messages.length > 0 && messages.filter(mess => mess.channel === channel).map(message =>(
+                <ChatMessage key={message.id} isOwn={message.user.id === user.id? true : false} 
                 userName={message.user.name} 
                 userImage={message.user.image}
                 messageText={message.value}/>

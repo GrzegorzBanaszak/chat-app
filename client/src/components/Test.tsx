@@ -6,7 +6,7 @@ const Test = () => {
     const [image,setImage] = useState("");
 
     useEffect(() =>{
-        const imageRef = ref(storage,"char1.jpg")
+        const imageRef = ref(storage,"boomer.png")
         getDownloadURL(imageRef).then(url =>console.log(url))
     },[])
   return (

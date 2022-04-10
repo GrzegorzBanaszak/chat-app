@@ -2,6 +2,7 @@ import {initializeApp} from "firebase/app"
 import {getFirestore,CollectionReference,collection,DocumentData} from "firebase/firestore"
 import { getStorage,ref } from "firebase/storage"
 import ICharacter from "../interfaces/ICharacter";
+import IMessage from "../interfaces/IMessage";
 import IUser from "../interfaces/IUser";
 
 
@@ -31,3 +32,4 @@ const createCollection = <T = DocumentData> (collectionName : string) =>{
 
 export const usersCol = createCollection<IUser>('users')
 export const charactersCol = createCollection<ICharacter>('characters')
+export const messagesCol = createCollection<IMessage>('messages')
