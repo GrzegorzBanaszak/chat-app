@@ -1,14 +1,23 @@
 const express = require('express');
-const app = express();
 const http = require("http")
-const {Server} = require('socket.io')
+const socketIo = require('socket.io')
 const cors = require('cors')
 
+const router = require("./router.js")
+
+const app = express();
 app.use(cors())
-
+app.use(router)
 const server = http.createServer(app)
+const io = socketIo(server,{
+    cors:{
+        origin:["https://6252a8aee620cf5e92a604ef--the-awesome-grzegorzbanaszak-site.netlify.app"],
+        methods:["GET","POST","DELETE"]
+    },
+})
 
-const io = new Server(server)
+
+
 
 const PORT = 3001
 

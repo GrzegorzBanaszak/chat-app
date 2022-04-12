@@ -10,7 +10,7 @@ import { addDoc, getDocs,serverTimestamp } from 'firebase/firestore'
 import  {io, Socket } from "socket.io-client"
 import IMessage from '../../interfaces/IMessage'
 
-const socket : Socket = io("http://192.168.0.104:3001");
+const socket : Socket = io("http://localhost:3001");
 
 interface IChatProps {
   user:IUser
