@@ -11,7 +11,7 @@ app.use(router)
 const server = http.createServer(app)
 const io = socketIo(server,{
     cors:{
-        origin:["https://6252a8aee620cf5e92a604ef--the-awesome-grzegorzbanaszak-site.netlify.app"],
+        origin:["http://localhost:3000/"],
         methods:["GET","POST","DELETE"]
     },
 })

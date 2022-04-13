@@ -4,28 +4,46 @@ import Home from './components/Home';
 import Chat from './components/Chat';
 import Test from './components/Test';
 import IUser from './interfaces/IUser';
+import Register from './components/Register';
+import Login from './components/Login';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './components/firebaseConfig';
 
 
 
 function App() {
-  const [user,setUser] = useState<IUser| null>(null)
+  const [user,setUser] = useState<any>({})
+  const [isLoading,setIsLoading] = useState<boolean>(true)
 
-  useEffect(() =>{
-    const userStorage = localStorage.getItem("user")
-    if(userStorage !== null){
-      setUser(JSON.parse(userStorage))
-    }
-  },[])
+  onAuthStateChanged(auth,(currentUser) =>{
+    setUser(currentUser)
+    setIsLoading(false);
+    console.log(currentUser?.displayName)
+  })
+  
+  if(isLoading){
+    return(
+      <div>Loading...</div>
+    )
+  }
 
-  return (
+  if(!isLoading){
+    return (
     <BrowserRouter>
         <Routes>
-        <Route path='/' element={user !== null?<Navigate replace to="/chat"/>:<Home setUser={setUser}/>}/>
-        <Route path='/chat' element={user === null ?<Navigate replace to="/"/> : <Chat user={user}/>}/>
-        <Route path='/test' element={<Test/>}/>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/register' element={<Register/>}/>
+          <Route path='/login' element={<Login/>}/>
+        {/* <Route path='/chat' element={<Chat user={user}/>}/> */}
+        {/* <Route path='/test' element={<Test/>}/> */}
         </Routes>
     </BrowserRouter>
   );
+  }
+  return(
+      <div>Loading...</div>
+    )
+  
 }
 
 export default App;
