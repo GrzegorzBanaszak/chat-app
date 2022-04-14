@@ -64,9 +64,6 @@ const Register = () => {
     }else if(nickname === ""){
       setErrorMessage({type:"nickname",text:"Enter your nickname"})
     }else{
-      const q = query(usersCol, where("name","==",nickname))
-      const usersSnap = await getDocs(q)
-      if(usersSnap.docs.length === 0){
         try {
           const user = await createUserWithEmailAndPassword(auth,email,password)
           updateProfile(user.user,{
@@ -76,7 +73,6 @@ const Register = () => {
         } catch (error : any) {
           console.log(error?.message)
         }
-      }
     }
   }
 

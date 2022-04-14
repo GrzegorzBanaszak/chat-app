@@ -5,19 +5,23 @@ import Channel from '../Channel'
 import ChatMessage from '../ChatMessage'
 import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
-import {messagesCol} from "../firebaseConfig"
-import { addDoc, getDocs,serverTimestamp } from 'firebase/firestore'
+import {auth, messagesCol} from "../firebaseConfig"
+import { addDoc, getDocs,orderBy,query,serverTimestamp, where } from 'firebase/firestore'
 import  {io, Socket } from "socket.io-client"
 import IMessage from '../../interfaces/IMessage'
-
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import {BiLogOut} from "react-icons/bi"
 const socket : Socket = io("http://localhost:3001");
 
 interface IChatProps {
-  user:IUser
+  user:any
 }
 
 
 const Chat :FC<IChatProps> = ({user}) => {
+  const nav = useNavigate()
+  const [currentUser,setCurrentUser] = useState<IUser>({id:user.uid,name:user.displayName,image:user.photoURL})
   const [toggleUsers,setToggleUsers] = useState<boolean>(false)
   const [toggleChannels,setToggleChannels] = useState<boolean>(false)
   const [messages,setMessages] = useState<IMessage[]>([])
@@ -28,8 +32,10 @@ const Chat :FC<IChatProps> = ({user}) => {
 
 
   const getMessages = async () =>{
-    const messagesDocs = await getDocs(messagesCol)
+    const q = query(messagesCol,orderBy("createdAt"))
+    const messagesDocs = await getDocs(q)
     setMessages(messagesDocs.docs.map(message => ({...message.data(),id:message.id})))
+
   }
   useEffect(() =>{
     getMessages()
@@ -47,7 +53,7 @@ const Chat :FC<IChatProps> = ({user}) => {
     })
 
     //Emit user when join
-    socket.emit("update_channel",{user,channel})
+    socket.emit("update_channel",{user:currentUser,channel})
     //Get user when you join
     socket.on("on_join",(data) =>{
       setUsers(data)
@@ -69,17 +75,20 @@ const Chat :FC<IChatProps> = ({user}) => {
 
   const addMessageSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
-    const message : IMessage = {
-      value:messageText,
-      user:user,
-      createdAt:serverTimestamp(),
-      channel:channel,
-    }
-    const addedMessage = await addDoc(messagesCol,message)
 
-    setMessages(prev => [...prev,{...message,id:addedMessage.id,channel:channel}])
-    socket.emit("send_message",{message:{...message,id:addedMessage.id,channel:channel}})
-    setMessageText("")
+    if(messageText !== ""){
+        const message : IMessage = {
+        value:messageText,
+        user:currentUser,
+        createdAt:serverTimestamp(),
+        channel:channel,
+      }
+      const addedMessage = await addDoc(messagesCol,message)
+
+      setMessages(prev => [...prev,{...message,id:addedMessage.id,channel:channel}])
+      socket.emit("send_message",{message:{...message,id:addedMessage.id,channel:channel}})
+      setMessageText("")
+    }
   }
 
   const handleToggleUsers = () =>{
@@ -91,11 +100,19 @@ const Chat :FC<IChatProps> = ({user}) => {
     setToggleChannels(prev => !prev)
   }
 
+  const logoutUser = async () =>{
+    await signOut(auth)
+    nav("/")
+  }
+
   return (
     <>
       <Nav toggleChannels={handleToggleChannels} toggleUsers={handleToggleUsers}/>
       <Container>
         <Users show={toggleUsers}>
+          <div onClick={logoutUser}>
+            <BiLogOut/>
+          </div>
           <UsersTitle>Users</UsersTitle>
           {users.length > 0  && users.filter(user => user.channel === channel)?.map(user => (<User key={user.id} userName={user.name} userImage={user.image}/>))}
         </Users>

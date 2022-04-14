@@ -11,7 +11,7 @@ app.use(router)
 const server = http.createServer(app)
 const io = socketIo(server,{
     cors:{
-        origin:["http://localhost:3000/"],
+        origin:["http://localhost:3000"],
         methods:["GET","POST","DELETE"]
     },
 })
@@ -50,7 +50,6 @@ io.on("connection",(socket) =>{
             usersData = [...filterdUsers,{...data.user,channel:data.channel,socketId:socket.id}]
             socket.broadcast.emit("on_join",usersData)
         }
-        console.log(io.sockets.adapter.rooms.has(data.channel))
         socket.join(data.channel)
         socket.emit("user_join",usersData)
     })
