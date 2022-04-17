@@ -5,12 +5,12 @@ import {FiUser} from "react-icons/fi"
 interface IChannelProps {
     channelName:string,
     channelUsers:number,
-    changeChannel:React.Dispatch<React.SetStateAction<string>>
+    handleChannel:(selectedChannel:string) => void
 }
 
-const Channel : FC<IChannelProps> = ({channelName,channelUsers,changeChannel}) => {
+const Channel : FC<IChannelProps> = ({channelName,channelUsers,handleChannel}) => {
   return (
-    <ChannelBox whileHover={{scale:0.98}} onClick={() => changeChannel(channelName)}>
+    <ChannelBox whileHover={{scale:0.98}} onClick={() => handleChannel(channelName)}>
       <ChannelUsers>
           <ChannelQuantity color={channelUsers > 0 ? "green" : "red"}>
             {channelUsers}

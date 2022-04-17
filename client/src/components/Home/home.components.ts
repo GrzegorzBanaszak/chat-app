@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
+import { device } from "../brakepoints"
 
 const Container = styled.section`
     height:calc(100vh - 90px);
@@ -16,98 +17,42 @@ const Title = styled(motion.h1)`
 `
 
 const LogoImage = styled.img`
-    margin-top: 1rem;
+    padding-top:1rem;
     display:block ;
     width:100%;
-    max-width:600px;
+    max-width:800px;
     margin: 0 auto;
 `
-const SelectSection = styled.section`
+
+const LinkBox = styled.div`
     display:flex;
     flex-direction:column ;
-    align-items:center ;
-`
-
-const SelectLable = styled.h3`
-    margin: 0.5rem 0;
-    font-size:1.7rem ;
-`
-
-const SelectCharacter = styled.select`
-    margin:0.5rem 0;
-    padding: 0.6rem;
-    width: 240px;
-    border: none;
-    border-radius:10px;
-    text-align:center;
-    font-size:1.2rem;
-    background-color:#546e7a ;
-    color:#eceff1 ;
-`
-const SelectOption = styled(motion.option)`
-    text-align:center;
-`
-
-const SelectImageWrapper = styled(motion.div)`
-    position:relative ;
-    padding: 0.7rem 0;
-    margin: 0.5rem 0;
-`
-
-const SelectArrowLeft = styled(motion.div)`
-    position:absolute;
-    top:0;
-    left:-50px;
-    height:100%;
-    display:flex;
-    align-items:center;
-    font-size:3rem;
-    background-color:#fafafa ;
-`
-const SelectArrowRight = styled(motion.div)`
-    position:absolute;
-    top:0;
-    right:-50px;
-    height:100%;
-    display:flex;
-    align-items:center;
-    font-size:3rem;
-    background-color:#fafafa ;
-`
-const SelectImage = styled(motion.img)`
-    margin-top:1rem;
-    margin-bottom:0.5rem;
-    width: 200px;
-    height:200px;
-    border-radius: 50%;
-`
-
-const SelectNameInput = styled.input`
-    border: none;
-    border-bottom: 2px solid #ccc;
-    border-radius: 10px;
-    padding:0.5rem;
-    font-size:1.2rem;
-    text-align:center ;
-    :focus{
-        outline: none !important;
-        box-shadow: 0 0 10px #455a64;
+    margin-top:5rem;
+    gap:1rem;
+    margin-left:1rem ;
+    margin-right:1rem ;
+    @media ${device.tablet}{
+        flex-direction:row;
     }
 `
 
-const SelectError = styled.span`
-    color:crimson ;
-    margin-top:0.5rem;
+const LinkMotion = styled(motion.div)`
+    background-color: #1a237e;
+    padding: 1rem;
+    text-align:center;
+    color: white;
+    font-weight:500;
+    font-size:1.4rem;
+    border-radius:10px;
+    
 `
 
-const SubmitCharacter = styled.a`
-    margin-top: 1.2rem;
+
+const LinkElement = styled(Link)`
     text-decoration:none;
-    background-color: #37474f;
-    color: #eceff1;
-    padding: 0.7rem 1rem;
-    border-radius: 15px;
-    cursor: pointer;
+    @media ${device.tablet}{
+        flex: 1;
+    }
 `
 
-export  {SelectArrowLeft,SelectArrowRight,SelectImageWrapper,SelectError,Container,Title,LogoImage,SelectSection,SelectLable,SelectCharacter,SelectOption,SelectImage,SelectNameInput,SubmitCharacter}
+export{Container,Title,LogoImage,LinkElement,LinkBox,LinkMotion}

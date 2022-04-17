@@ -3,5 +3,6 @@ export default interface IUser {
     name: string,
     image: string,
     socketId?:string,
-    channel?:string
+    channel?:string,
+    isConnect?:boolean
 }
