@@ -69,7 +69,7 @@ const Register = () => {
           updateProfile(user.user,{
             displayName:nickname,
             photoURL:characterList[selectedCharacter].image
-          })
+          }).then(() => nav("/"))
         } catch (error : any) {
           console.log(error?.message)
         }

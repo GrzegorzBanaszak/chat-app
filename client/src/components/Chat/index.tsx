@@ -6,13 +6,13 @@ import ChatMessage from '../ChatMessage'
 import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
 import {auth, messagesCol} from "../firebaseConfig"
-import { addDoc, getDocs,orderBy,query,serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, getDocs,orderBy,query,serverTimestamp } from 'firebase/firestore'
 import  {io, Socket } from "socket.io-client"
 import IMessage from '../../interfaces/IMessage'
-import { signOut } from 'firebase/auth'
+import ChatMenu from '../ChatMenu'
 import { useNavigate } from 'react-router-dom'
-import {BiLogOut} from "react-icons/bi"
-const socket : Socket = io("http://localhost:3001");
+import { signOut } from 'firebase/auth'
+import socket from "../../socketConfig"
 
 interface IChatProps {
   user:any
@@ -20,7 +20,8 @@ interface IChatProps {
 
 
 const Chat :FC<IChatProps> = ({user}) => {
-  const nav = useNavigate()
+  
+  //#region  State
   const [currentUser,setCurrentUser] = useState<IUser>({id:user.uid,name:user.displayName,image:user.photoURL})
   const [toggleUsers,setToggleUsers] = useState<boolean>(false)
   const [toggleChannels,setToggleChannels] = useState<boolean>(false)
@@ -30,7 +31,8 @@ const Chat :FC<IChatProps> = ({user}) => {
   const [messageText,setMessageText] = useState<string>('')
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
-
+  //#endregion
+  
   const getMessages = async () =>{
     const q = query(messagesCol,orderBy("createdAt"))
     const messagesDocs = await getDocs(q)
@@ -39,21 +41,21 @@ const Chat :FC<IChatProps> = ({user}) => {
   }
   useEffect(() =>{
     getMessages()
+    //Emit user when join
+    socket.emit("update_channel",{user:currentUser,channel})
   },[])
 
   useEffect(() =>{
     scrollRef.current?.scrollIntoView({behavior: "smooth"})
   },[messages])
 
-
+  //#region Socket
   useEffect(() =>{
 
     socket.on("receive_message",(data) => {
         setMessages(prev => [...prev,data.message])
     })
 
-    //Emit user when join
-    socket.emit("update_channel",{user:currentUser,channel})
     //Get user when you join
     socket.on("on_join",(data) =>{
       setUsers(data)
@@ -68,10 +70,22 @@ const Chat :FC<IChatProps> = ({user}) => {
       setUsers(data)
     })
 
+    socket.on("user_change_channel",(data) =>{
+      setUsers(data)
+    })
+
     return () =>{
       socket.off()
     }
   },[socket,channel])
+  //#endregion
+  
+  const nav = useNavigate();
+  const logoutUser = async () =>{
+      await signOut(auth)
+      socket.emit("logout")
+      nav("/")
+  }
 
   const addMessageSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
@@ -100,30 +114,35 @@ const Chat :FC<IChatProps> = ({user}) => {
     setToggleChannels(prev => !prev)
   }
 
-  const logoutUser = async () =>{
-    await signOut(auth)
-    nav("/")
+  const hideToggle = () =>{
+    if(toggleUsers) setToggleUsers(false)
+    if(toggleChannels) setToggleChannels(false)
   }
 
+  const handleChannelChange = (selectedChannel:string) =>{
+    setChannel(selectedChannel)
+    socket.emit("channel_change",{user:currentUser,channel:selectedChannel})
+  }
+  
   return (
     <>
       <Nav toggleChannels={handleToggleChannels} toggleUsers={handleToggleUsers}/>
-      <Container>
+      <Container onClick={hideToggle}>
         <Users show={toggleUsers}>
-          <div onClick={logoutUser}>
-            <BiLogOut/>
-          </div>
+          <ChatMenu logoutUser={logoutUser}/>
           <UsersTitle>Users</UsersTitle>
           {users.length > 0  && users.filter(user => user.channel === channel)?.map(user => (<User key={user.id} userName={user.name} userImage={user.image}/>))}
         </Users>
         <ChatMessages>
           <ChatMessagesWrapper>
-            <ChatMessagesTop ref={scrollRef}>
+            <ChatMessagesTop>
               {messages.length > 0 && messages.filter(mess => mess.channel === channel).map(message =>(
-                <ChatMessage key={message.id} isOwn={message.user.id === user.id? true : false} 
-                userName={message.user.name} 
-                userImage={message.user.image}
-                messageText={message.value}/>
+                <div ref={scrollRef}>
+                    <ChatMessage key={message.id} isOwn={message.user.id === currentUser.id? true : false} 
+                  userName={message.user.name} 
+                  userImage={message.user.image}
+                  messageText={message.value}/>
+                </div>
               ))}
             </ChatMessagesTop>
             <ChatMessagesBottom onSubmit={addMessageSubmit}>
@@ -134,8 +153,8 @@ const Chat :FC<IChatProps> = ({user}) => {
         </ChatMessages>
         <Channels show={toggleChannels}>
           <ChannelsWrapper>
-            <Channel changeChannel={setChannel} channelName={"channel1"} channelUsers={users.filter(user => user.channel ==="channel1").length}/>
-            <Channel changeChannel={setChannel} channelName={"channel2"} channelUsers={users.filter(user => user.channel ==="channel2").length}/>
+            <Channel  channelName={"channel1"} handleChannel={handleChannelChange} channelUsers={users.filter(user => user.channel ==="channel1").length}/>
+            <Channel  channelName={"channel2"} handleChannel={handleChannelChange} channelUsers={users.filter(user => user.channel ==="channel2").length}/>
           </ChannelsWrapper>
         </Channels>
       </Container>

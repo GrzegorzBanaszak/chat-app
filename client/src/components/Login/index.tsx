@@ -14,7 +14,7 @@ const Login = () => {
     if(email !== "" && password !== ""){
       try {
         await signInWithEmailAndPassword(auth,email,password)
-        
+        nav("/")
       } catch (error:any) {
         console.log(error.message)
       }

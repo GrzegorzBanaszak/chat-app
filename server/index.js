@@ -11,7 +11,7 @@ app.use(router)
 const server = http.createServer(app)
 const io = socketIo(server,{
     cors:{
-        origin:["http://localhost:3000"],
+        origin:["http://localhost:3000","http://192.168.0.104:3000"],
         methods:["GET","POST","DELETE"]
     },
 })
@@ -32,7 +32,6 @@ const PORT = 3001
 let usersData = new Array(0);
 
 io.on("connection",(socket) =>{
-
     socket.join("channel1")
 
     socket.on("send_message",(data) =>{
@@ -40,23 +39,36 @@ io.on("connection",(socket) =>{
     })
 
     socket.on("update_channel",(data) =>{
-        if(usersData.length === 0 || usersData.some(user => user.name !== data.user.name)){
+        
+        if(usersData.length === 0 || usersData.some(user => user.id !== data.user.id)){
             usersData.push({...data.user,channel:data.channel,socketId:socket.id})
             socket.broadcast.emit("on_join",usersData)
         }
 
         if(usersData.some(user => user.channel !== data.channel) && usersData.some(user => user.name === data.user.name)){
-            const filterdUsers = usersData.filter(user => user.name !== data.user.name)
+            const filterdUsers = usersData.filter(user => user.id !== data.user.id)
             usersData = [...filterdUsers,{...data.user,channel:data.channel,socketId:socket.id}]
             socket.broadcast.emit("on_join",usersData)
         }
         socket.join(data.channel)
-        socket.emit("user_join",usersData)
+        socket.emit("user_join",usersData) 
     })
 
-    // socket.on("channel_change",(data) =>{
+    socket.on("channel_change",data =>{
+        const filterdUsers = usersData.filter(user => user.id !== data.user.id)
+        usersData = [...filterdUsers,{...data.user,channel:data.channel,socketId:socket.id}]
+        socket.broadcast.emit("user_change_channel",usersData)
+        socket.emit("user_change_channel",usersData)
+    })
 
-    // })
+    socket.on("logout",(data) =>{
+        const filtredUsers = usersData.filter(user => user.socketId !== socket.id)
+        if(filtredUsers !== undefined){
+            usersData = filtredUsers
+            socket.broadcast.emit("user_leave",usersData)
+        }
+    })
+
     
     socket.on("disconnect",() =>{
        const filtredUsers = usersData.filter(user => user.socketId !== socket.id)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {BrowserRouter,Routes,Route, Navigate} from 'react-router-dom';
 import Home from './components/Home';
 import Chat from './components/Chat';
@@ -9,7 +9,6 @@ import {onAuthStateChanged } from 'firebase/auth';
 import { auth } from './components/firebaseConfig';
 
 
-
 function App() {
   const [user,setUser] = useState<any>(null)
   const [isLoading,setIsLoading] = useState<boolean>(true)
@@ -18,6 +17,7 @@ function App() {
     setUser(currentUser)
     setIsLoading(false);
   })
+
   
   if(isLoading){
     return(
