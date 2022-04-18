@@ -15,10 +15,8 @@ const ChatMenu :FC<ChatMenuProps> = ({logoutUser}) => {
     <MenuContanier>
         <MenuButton onClick={logoutUser}>
             <BiLogOut/>
+            Logout
         </MenuButton>
-        <MenuLink to="/user">
-             <BiUser/>
-        </MenuLink>
     </MenuContanier>
   )
 }

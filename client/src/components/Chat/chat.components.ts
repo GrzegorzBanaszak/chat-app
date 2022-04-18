@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { motion } from "framer-motion"
 import { device } from "../brakepoints"
+import { colors } from "../theme"
 
 const Container = styled.div`
     width:100%;
@@ -15,7 +16,7 @@ interface isViseble{
 
 const Users = styled.section<isViseble>`
     flex: 3;
-    background-color:#3949ab ;
+    background-color: ${colors.mediumBlue} ;
     padding: 1rem 0.2rem;
     font-size:2rem ;
     position: absolute;
@@ -80,7 +81,7 @@ const MessagesSubmit = styled.button`
 
 const Channels = styled.section<isViseble>`
     flex: 3;
-    background-color:#1976d2 ;
+    background-color:${colors.lightBlue} ;
     position:absolute;
     height: 100%;
     transition: transform 0.4s ease-in;

@@ -12,7 +12,9 @@ const Channel : FC<IChannelProps> = ({channelName,channelUsers,handleChannel}) =
   return (
     <ChannelBox whileHover={{scale:0.98}} onClick={() => handleChannel(channelName)}>
       <ChannelUsers>
-          <ChannelQuantity color={channelUsers > 0 ? "green" : "red"}>
+          <ChannelQuantity
+           color={channelUsers > 0 ? "green" : "red"}
+           >
             {channelUsers}
           </ChannelQuantity> 
           <FiUser/>

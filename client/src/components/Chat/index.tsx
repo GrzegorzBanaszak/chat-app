@@ -6,14 +6,13 @@ import ChatMessage from '../ChatMessage'
 import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
 import {auth, messagesCol} from "../firebaseConfig"
-import { addDoc, getDocs,orderBy,query,serverTimestamp } from 'firebase/firestore'
-import  {io, Socket } from "socket.io-client"
+import { addDoc, getDocs,limit,orderBy,query,serverTimestamp, where } from 'firebase/firestore'
 import IMessage from '../../interfaces/IMessage'
 import ChatMenu from '../ChatMenu'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import socket from "../../socketConfig"
-
+import { AnimatePresence } from 'framer-motion'
 interface IChatProps {
   user:any
 }
@@ -34,17 +33,19 @@ const Chat :FC<IChatProps> = ({user}) => {
   //#endregion
   
   const getMessages = async () =>{
-    const q = query(messagesCol,orderBy("createdAt"))
+    const q = query(messagesCol,where("channel","==",channel),orderBy("createdAt"))
     const messagesDocs = await getDocs(q)
     setMessages(messagesDocs.docs.map(message => ({...message.data(),id:message.id})))
 
   }
   useEffect(() =>{
-    getMessages()
     //Emit user when join
     socket.emit("update_channel",{user:currentUser,channel})
   },[])
 
+  useEffect(() =>{
+    getMessages()
+  },[channel])
   useEffect(() =>{
     scrollRef.current?.scrollIntoView({behavior: "smooth"})
   },[messages])
@@ -77,13 +78,13 @@ const Chat :FC<IChatProps> = ({user}) => {
     return () =>{
       socket.off()
     }
-  },[socket,channel])
+  },[socket])
   //#endregion
   
   const nav = useNavigate();
   const logoutUser = async () =>{
       await signOut(auth)
-      socket.emit("logout")
+     socket.emit("logout")
       nav("/")
   }
 
@@ -131,14 +132,22 @@ const Chat :FC<IChatProps> = ({user}) => {
         <Users show={toggleUsers}>
           <ChatMenu logoutUser={logoutUser}/>
           <UsersTitle>Users</UsersTitle>
-          {users.length > 0  && users.filter(user => user.channel === channel)?.map(user => (<User key={user.id} userName={user.name} userImage={user.image}/>))}
+          <AnimatePresence
+            initial={false}
+            exitBeforeEnter={false}
+            onExitComplete={() => null}
+          >
+        {users.length > 0  && users.filter(user => user.channel === channel)?.map(user => (
+            <User key={user.id} userName={user.name} userImage={user.image}/>
+        ))}
+        </AnimatePresence>
         </Users>
         <ChatMessages>
           <ChatMessagesWrapper>
             <ChatMessagesTop>
-              {messages.length > 0 && messages.filter(mess => mess.channel === channel).map(message =>(
-                <div ref={scrollRef}>
-                    <ChatMessage key={message.id} isOwn={message.user.id === currentUser.id? true : false} 
+              {messages.length > 0 && messages.map(message =>(
+                <div key={message.id} ref={scrollRef}>
+                    <ChatMessage  isOwn={message.user.id === currentUser.id? true : false} 
                   userName={message.user.name} 
                   userImage={message.user.image}
                   messageText={message.value}/>

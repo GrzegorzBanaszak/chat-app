@@ -2,21 +2,25 @@ import styled from "styled-components"
 import { motion } from "framer-motion"
 
 
-const UserBox = styled.div`
+const UserBox = styled(motion.div)`
     display: flex;
     align-items: center;
-    padding:0.7rem;
+    margin:0.7rem;
+    border-radius:64px;
+    background-color:white ;
+    padding:0.4rem 0;
 `
 const UserImage = styled.img`
     width: 64px;
     height:64px;
     border-radius:50%;
+    margin-left:1rem;
 `
 
 const UserName = styled.h3`
     margin-left:1rem ;
-    color: #fff;
-    font-size:1.5rem;
+    color: black;
+    font-size:1.8rem;
 `
 
 export {UserBox,UserImage,UserName,}
