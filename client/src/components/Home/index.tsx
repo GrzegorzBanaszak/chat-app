@@ -7,7 +7,7 @@ import {Container,
   LinkBox,
   LinkMotion
 } from "./home.components"
-
+import {IoChatbubblesSharp} from "react-icons/io5"
 const bottonVariant = {
   hover: {
     scale:1.02,
@@ -26,7 +26,7 @@ const Home  = () => {
   
   return (
     <>
-      <Title>CzateX</Title>
+      <Title>CzateX <IoChatbubblesSharp/></Title>
       <Container>
       <LogoImage src='Logo.png' alt="logo"/>
       <LinkBox>

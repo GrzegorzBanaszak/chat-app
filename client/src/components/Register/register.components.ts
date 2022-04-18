@@ -28,6 +28,12 @@ const LogoImage = styled.img`
     max-width:600px;
     margin: 0 auto;
 `
+
+const RegisterTitle = styled.h2`
+    margin:0.7rem 0;
+    text-align:center;
+    font-size:3rem;
+`
 const RegisterForm = styled.form`
     display:flex;
     flex-direction:column ;
@@ -61,7 +67,7 @@ const SelectLable = styled.h3`
 const SelectImageWrapper = styled.div`
     position:relative ;
     margin: 0.7rem 0;
-    height: 250px;
+    height: 200px;
     background-color:white ;
 `
 
@@ -89,8 +95,8 @@ const SelectArrowRight = styled(motion.div)`
 
 `
 const SelectImage = styled.img`
-    width: 250px;
-    height:250px;
+    width: 200px;
+    height:200px;
 `
 
 
@@ -112,4 +118,4 @@ const SubmitCharacter = styled.button`
     cursor: pointer;
 `
 
-export  {TitleLink,RegisterLable,RegisterInput,SelectArrowLeft,SelectArrowRight,SelectImageWrapper,RegisterInputError,Container,Title,LogoImage,RegisterForm,SelectLable,SelectImage,SubmitCharacter}
+export  {RegisterTitle,TitleLink,RegisterLable,RegisterInput,SelectArrowLeft,SelectArrowRight,SelectImageWrapper,RegisterInputError,Container,Title,LogoImage,RegisterForm,SelectLable,SelectImage,SubmitCharacter}

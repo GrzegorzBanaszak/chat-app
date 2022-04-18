@@ -20,6 +20,13 @@ const TitleLink = styled(Link)`
     text-decoration: none;
     font-weight:600;
 `
+
+
+const LoginTitle = styled.h2`
+    margin: 1rem 0 0 0.5rem;
+    text-align:center;
+    font-size:3rem;
+`
 const LoginForm = styled.form`
     display:flex;
     flex-direction:column ;
@@ -46,6 +53,12 @@ const LoginInput = styled.input`
         box-shadow: 0 0 10px #455a64;
     }
 `
+const LoginInputError = styled.span`
+    color:crimson ;
+    margin-top:0.5rem;
+    text-align:center;
+    font-size:1.2rem ;
+`
 
 const SubmitLoginForm = styled.button`
     margin-top: 1.2rem;
@@ -58,4 +71,4 @@ const SubmitLoginForm = styled.button`
     cursor: pointer;
 `
 
-export {Container,Title,TitleLink,LoginInput,LoginLable,LoginForm,SubmitLoginForm}
+export {Container,Title,TitleLink,LoginInput,LoginLable,LoginForm,SubmitLoginForm,LoginTitle,LoginInputError}

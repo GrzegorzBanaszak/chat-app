@@ -12,11 +12,12 @@ import {Container,
   SubmitCharacter,
 RegisterInputError,
 SelectImageWrapper,
-SelectArrowLeft,SelectArrowRight,RegisterLable,RegisterInput} from "./register.components"
+SelectArrowLeft,SelectArrowRight,RegisterLable,RegisterInput,RegisterTitle} from "./register.components"
 import {getDocs} from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import IErrorMessage from '../../interfaces/IErrorMessage'
+import {IoChatbubblesSharp} from "react-icons/io5"
 
 
 const defaultErrorMessage :IErrorMessage = {
@@ -71,7 +72,13 @@ const Register = () => {
             photoURL:characterList[selectedCharacter].image
           }).then(() => nav("/"))
         } catch (error : any) {
-          setErrorMessage({type:"serverError",text: error?.message})
+            if(error.code === "auth/weak-password"){
+            setErrorMessage({type:"serverError",text: "Password should be at least 6 characters"})
+          }
+
+          if(error.code === "auth/email-already-in-use"){
+            setErrorMessage({type:"serverError",text: "The provided email is already in use by an existing user"})
+          }
         }
     }
   }
@@ -79,9 +86,10 @@ const Register = () => {
   return (
     <>
       <Title>
-        <TitleLink to="/">CzateX</TitleLink>
+        <TitleLink to="/">CzateX <IoChatbubblesSharp/></TitleLink>
       </Title>
       <Container>
+        <RegisterTitle>Register </RegisterTitle>
       <RegisterForm onSubmit={registerHandleForm}>
         <RegisterLable>
           Email
