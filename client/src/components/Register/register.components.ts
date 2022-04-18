@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
+import { colors } from "../theme"
 
 const Container = styled.section`
     height:calc(100vh - 90px);
@@ -10,7 +11,7 @@ const Container = styled.section`
 const Title = styled(motion.header)`
     text-align:center ;
     padding: 1rem 0;
-    background-color:#1a237e ;
+    background-color: ${colors.darkBlue} ;
 `
 
 const TitleLink = styled(Link)`
@@ -49,7 +50,7 @@ const RegisterInput = styled.input`
     margin-top:0.5rem;
     :focus{
         outline: none !important;
-        box-shadow: 0 0 10px #455a64;
+        box-shadow: 0 0 10px ${colors.shadow};
     }
 `
 const SelectLable = styled.h3`
@@ -57,53 +58,39 @@ const SelectLable = styled.h3`
     font-size:1.7rem ;
 `
 
-const SelectCharacter = styled.select`
-    margin:0.5rem 0;
-    padding: 0.6rem;
-    width: 240px;
-    border: none;
-    border-radius:10px;
-    text-align:center;
-    font-size:1.2rem;
-    background-color:#546e7a ;
-    color:#eceff1 ;
-`
-const SelectOption = styled(motion.option)`
-    text-align:center;
-`
-
-const SelectImageWrapper = styled(motion.div)`
+const SelectImageWrapper = styled.div`
     position:relative ;
-    padding: 0.7rem 0;
-    margin: 0.5rem 0;
+    margin: 0.7rem 0;
+    height: 250px;
+    background-color:white ;
 `
 
 const SelectArrowLeft = styled(motion.div)`
     position:absolute;
     top:0;
-    left:-50px;
+    left:-45px;
     height:100%;
     display:flex;
     align-items:center;
     font-size:3rem;
-    background-color:#fafafa ;
+    background-color:white ;
+    border-radius:15px 0 0 15px ;
 `
 const SelectArrowRight = styled(motion.div)`
     position:absolute;
     top:0;
-    right:-50px;
+    right:-45px;
     height:100%;
     display:flex;
     align-items:center;
     font-size:3rem;
-    background-color:#fafafa ;
+    background-color:white ;
+    border-radius:0 15px 15px 0 ;
+
 `
-const SelectImage = styled(motion.img)`
-    margin-top:1rem;
-    margin-bottom:0.5rem;
-    width: 200px;
-    height:200px;
-    border-radius: 50%;
+const SelectImage = styled.img`
+    width: 250px;
+    height:250px;
 `
 
 
@@ -111,6 +98,7 @@ const RegisterInputError = styled.span`
     color:crimson ;
     margin-top:0.5rem;
     text-align:center;
+    font-size:1.2rem ;
 `
 
 const SubmitCharacter = styled.button`
@@ -124,4 +112,4 @@ const SubmitCharacter = styled.button`
     cursor: pointer;
 `
 
-export  {TitleLink,RegisterLable,RegisterInput,SelectArrowLeft,SelectArrowRight,SelectImageWrapper,RegisterInputError,Container,Title,LogoImage,RegisterForm,SelectLable,SelectCharacter,SelectOption,SelectImage,SubmitCharacter}
+export  {TitleLink,RegisterLable,RegisterInput,SelectArrowLeft,SelectArrowRight,SelectImageWrapper,RegisterInputError,Container,Title,LogoImage,RegisterForm,SelectLable,SelectImage,SubmitCharacter}

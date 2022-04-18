@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {charactersCol,usersCol,auth} from "../firebaseConfig"
+import {charactersCol,auth} from "../firebaseConfig"
 import defCharacter from "../../images/character.png"
 import ICharacter from '../../interfaces/ICharacter'
 import {BsChevronLeft,BsChevronRight} from "react-icons/bs"
@@ -13,7 +13,7 @@ import {Container,
 RegisterInputError,
 SelectImageWrapper,
 SelectArrowLeft,SelectArrowRight,RegisterLable,RegisterInput} from "./register.components"
-import { addDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import {getDocs} from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import IErrorMessage from '../../interfaces/IErrorMessage'
@@ -71,13 +71,10 @@ const Register = () => {
             photoURL:characterList[selectedCharacter].image
           }).then(() => nav("/"))
         } catch (error : any) {
-          console.log(error?.message)
+          setErrorMessage({type:"serverError",text: error?.message})
         }
     }
   }
-
-
-
 
   return (
     <>
@@ -110,8 +107,9 @@ const Register = () => {
           }}
           onClick={() => selectedCharacter > 0 ? setSelectedCharacter(prev => prev - 1): setSelectedCharacter(characterList.length - 1)}
           ><BsChevronLeft/></SelectArrowLeft>
-          <SelectImage src={characterList.length > 0 ? characterList[selectedCharacter].image : defCharacter} alt="characterImage" />
-          <SelectArrowRight whileHover={{
+            <SelectImage  src={characterList.length > 0 ? characterList[selectedCharacter].image : defCharacter} alt="characterImage" />
+          <SelectArrowRight
+          whileHover={{
             scale:0.98,
             backgroundColor:"#eeeeee",
             cursor:"pointer"
@@ -119,6 +117,7 @@ const Register = () => {
           onClick={() => selectedCharacter < characterList.length - 1 ? setSelectedCharacter(prev => prev + 1): setSelectedCharacter(0)}
           ><BsChevronRight/></SelectArrowRight>
         </SelectImageWrapper>
+        {errorMessage.type === "serverError" && <RegisterInputError>{errorMessage.text}</RegisterInputError>} 
         <SubmitCharacter type="submit" >Register</SubmitCharacter>
       </RegisterForm>
     </Container>

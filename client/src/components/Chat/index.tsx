@@ -7,12 +7,11 @@ import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
 import {auth, messagesCol} from "../firebaseConfig"
 import { addDoc, getDocs,orderBy,query,serverTimestamp } from 'firebase/firestore'
-import  {io, Socket } from "socket.io-client"
 import IMessage from '../../interfaces/IMessage'
 import ChatMenu from '../ChatMenu'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
-import socket from "../../socketConfig"
+// import socket from "../../socketConfig"
 
 interface IChatProps {
   user:any
@@ -42,7 +41,7 @@ const Chat :FC<IChatProps> = ({user}) => {
   useEffect(() =>{
     getMessages()
     //Emit user when join
-    socket.emit("update_channel",{user:currentUser,channel})
+    //socket.emit("update_channel",{user:currentUser,channel})
   },[])
 
   useEffect(() =>{
@@ -50,40 +49,40 @@ const Chat :FC<IChatProps> = ({user}) => {
   },[messages])
 
   //#region Socket
-  useEffect(() =>{
+  // useEffect(() =>{
 
-    socket.on("receive_message",(data) => {
-        setMessages(prev => [...prev,data.message])
-    })
+  //   socket.on("receive_message",(data) => {
+  //       setMessages(prev => [...prev,data.message])
+  //   })
 
-    //Get user when you join
-    socket.on("on_join",(data) =>{
-      setUsers(data)
-    })
+  //   //Get user when you join
+  //   socket.on("on_join",(data) =>{
+  //     setUsers(data)
+  //   })
 
-    //Get users when user join
-    socket.on("user_join",(data) =>{
-      setUsers(data)
-    })
+  //   //Get users when user join
+  //   socket.on("user_join",(data) =>{
+  //     setUsers(data)
+  //   })
 
-    socket.on("user_leave",(data) =>{
-      setUsers(data)
-    })
+  //   socket.on("user_leave",(data) =>{
+  //     setUsers(data)
+  //   })
 
-    socket.on("user_change_channel",(data) =>{
-      setUsers(data)
-    })
+  //   socket.on("user_change_channel",(data) =>{
+  //     setUsers(data)
+  //   })
 
-    return () =>{
-      socket.off()
-    }
-  },[socket,channel])
+  //   return () =>{
+  //     socket.off()
+  //   }
+  // },[socket,channel])
   //#endregion
   
   const nav = useNavigate();
   const logoutUser = async () =>{
       await signOut(auth)
-      socket.emit("logout")
+     // socket.emit("logout")
       nav("/")
   }
 
@@ -100,7 +99,7 @@ const Chat :FC<IChatProps> = ({user}) => {
       const addedMessage = await addDoc(messagesCol,message)
 
       setMessages(prev => [...prev,{...message,id:addedMessage.id,channel:channel}])
-      socket.emit("send_message",{message:{...message,id:addedMessage.id,channel:channel}})
+      // socket.emit("send_message",{message:{...message,id:addedMessage.id,channel:channel}})
       setMessageText("")
     }
   }
@@ -121,7 +120,7 @@ const Chat :FC<IChatProps> = ({user}) => {
 
   const handleChannelChange = (selectedChannel:string) =>{
     setChannel(selectedChannel)
-    socket.emit("channel_change",{user:currentUser,channel:selectedChannel})
+    // socket.emit("channel_change",{user:currentUser,channel:selectedChannel})
   }
   
   return (

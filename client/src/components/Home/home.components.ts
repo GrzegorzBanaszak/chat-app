@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { motion } from "framer-motion"
 import {Link} from "react-router-dom"
 import { device } from "../brakepoints"
+import { colors } from "../theme"
 
 const Container = styled.section`
     height:calc(100vh - 90px);
@@ -12,7 +13,7 @@ const Title = styled(motion.h1)`
     text-align:center ;
     padding: 1rem 0;
     font-size:3rem ;
-    background-color:#1a237e ;
+    background-color: ${colors.darkBlue} ;
     color: white;
 `
 
@@ -37,7 +38,7 @@ const LinkBox = styled.div`
 `
 
 const LinkMotion = styled(motion.div)`
-    background-color: #1a237e;
+    background-color: ${colors.darkBlue};
     padding: 1rem;
     text-align:center;
     color: white;
