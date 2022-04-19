@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { motion } from "framer-motion"
 import { device } from "../brakepoints"
 import { colors } from "../theme"
 

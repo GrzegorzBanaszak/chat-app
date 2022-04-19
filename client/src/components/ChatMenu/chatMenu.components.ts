@@ -1,5 +1,4 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom"
 
 
 const MenuContanier = styled.div`
@@ -20,13 +19,4 @@ const MenuButton = styled.div`
     cursor: pointer;
 `
 
-const MenuLink = styled(Link)`
-    background-color: white;
-    padding:0.5rem 1rem ;
-    display: flex ;
-    align-items:center ;
-    justify-content: center;
-    border-radius:10px ;
-
-`
-export {MenuContanier,MenuButton,MenuLink}
+export {MenuContanier,MenuButton}

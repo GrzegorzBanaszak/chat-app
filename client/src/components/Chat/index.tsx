@@ -6,13 +6,14 @@ import ChatMessage from '../ChatMessage'
 import Nav from '../Nav'
 import IUser from '../../interfaces/IUser'
 import {auth, messagesCol} from "../firebaseConfig"
-import { addDoc, getDocs,limit,orderBy,query,serverTimestamp, where } from 'firebase/firestore'
+import { addDoc, getDocs,orderBy,query,serverTimestamp, where } from 'firebase/firestore'
 import IMessage from '../../interfaces/IMessage'
 import ChatMenu from '../ChatMenu'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import socket from "../../socketConfig"
 import { AnimatePresence } from 'framer-motion'
+
 interface IChatProps {
   user:any
 }

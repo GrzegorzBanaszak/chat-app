@@ -1,9 +1,6 @@
-import { signOut } from 'firebase/auth'
 import React, { FC } from 'react'
-import { BiLogOut, BiUser } from 'react-icons/bi'
-import { useNavigate } from 'react-router-dom'
-import { auth } from '../firebaseConfig'
-import { MenuContanier,MenuButton ,MenuLink} from './chatMenu.components'
+import { BiLogOut } from 'react-icons/bi'
+import { MenuContanier,MenuButton } from './chatMenu.components'
 
 interface ChatMenuProps {
   logoutUser:() =>void
