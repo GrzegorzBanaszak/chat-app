@@ -11,7 +11,7 @@ app.use(router)
 const server = http.createServer(app)
 const io = socketIo(server,{
     cors:{
-        origin:["http://localhost:3000","http://192.168.0.104:3000"],
+        origin:["https://chat-app-26d71.web.app","http://localhost:3000"],
         methods:["GET","POST","DELETE"]
     },
 })

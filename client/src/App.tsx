@@ -6,6 +6,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import {onAuthStateChanged } from 'firebase/auth';
 import { auth } from './components/firebaseConfig';
+import Loader from './components/Loader';
 
 
 function App() {
@@ -16,11 +17,10 @@ function App() {
     setUser(currentUser)
     setIsLoading(false);
   })
-
   
   if(isLoading){
     return(
-      <div>Loading...</div>
+      <Loader/>
     )
   }
 
@@ -37,7 +37,7 @@ function App() {
   );
   }
   return(
-      <div>Loading...</div>
+      <Loader/>
     )
   
 }
